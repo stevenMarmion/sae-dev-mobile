@@ -18,10 +18,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  
   flutter_lints: ^3.0.0
   supabase_flutter: ^2.0.0
-  sqflite: ^1.1.0
+  sqflite: ^2.3.2
 
 flutter:
   uses-material-design: true
@@ -32,7 +32,3 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/images/
-
-  config:
-    web:
-      'http://localhost:8080'

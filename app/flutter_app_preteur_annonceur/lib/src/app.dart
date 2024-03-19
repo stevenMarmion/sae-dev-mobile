@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_preteur_annonceur/src/login_register/login.dart';
 // ignore: depend_on_referenced_packages
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -7,9 +8,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Countries',
-      home: HomePage(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: LoginPage(),
+      // home: HomePage(),
     );
   }
 }

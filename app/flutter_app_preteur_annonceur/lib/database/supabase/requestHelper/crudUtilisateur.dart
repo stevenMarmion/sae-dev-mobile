@@ -7,7 +7,7 @@ class UtilisateurCrud {
         .insert({
           'nomu': nom,
           'prenomu': prenom,
-          'âgeu': age,
+          'ageu': age,
           'adressemail': adresseMail,
           'mdpu': mdp,
           'pseudou': pseudo,
@@ -33,7 +33,7 @@ class UtilisateurCrud {
         .update({
           'nomu': nom,
           'prenomu': prenom,
-          'âgeu': age,
+          'ageu': age,
           'adressemail': adresseMail,
           'mdpu': mdp,
           'pseudou': pseudo,
@@ -48,17 +48,15 @@ class UtilisateurCrud {
         .eq('identifiantutilisateur', idUtilisateur);
   }
 
-  static Future<Map<String, dynamic>?> fetchUtilisateurByPseudoAndPassword(String pseudo, String mdp) async {
+  static Future<PostgrestList?> fetchUtilisateurByPseudoAndPassword(String pseudo, String mdp) async {
     final response = await Supabase.instance.client
         .from('UTILISATEUR')
         .select()
         .eq('pseudou', pseudo)
-        .eq('mdpu', mdp)
-        .single();
-
+        .eq('mdpu', mdp);
+        
     if (response.isEmpty) {
-      print('Erreur lors de la récupération de l\'utilisateur !');
-      return null;
+      print('Utilisateur inexistant');
     }
 
     return response;

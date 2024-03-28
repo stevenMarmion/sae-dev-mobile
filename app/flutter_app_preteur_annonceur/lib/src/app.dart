@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_preteur_annonceur/database/sqflite/connexion_sqflite.dart';
-import 'package:flutter_app_preteur_annonceur/database/sqflite/requestHelper/crudEtat.dart';
+import 'package:flutter_app_preteur_annonceur/database/supabase/connexion_supabase.dart';
 import 'package:flutter_app_preteur_annonceur/router/app_router.dart';
-import 'package:sqflite/sqflite.dart';
 // ignore: depend_on_referenced_packages
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DatabaseHelper.getDatabase();
-    EtatDatabaseHelper.getEtats();
+    SupabaseConnexion.initaliseConnexion();
+    final supabase = Supabase.instance.client;
 
     return MaterialApp(
       title: 'My App',

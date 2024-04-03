@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_preteur_annonceur/utils/token.dart';
 import 'package:go_router/go_router.dart';
 import 'package:postgrest/src/types.dart';
 import '../../database/supabase/requestHelper/crudUtilisateur.dart';
@@ -109,8 +110,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         setState(() {
                           _accountAlreadyExists = null;
                         });
-                        await UtilisateurCrud.createUtilisateur('', '', -1, '', mdp, pseudo);
-                        context.go('/home');
+                        int token = TokenGenerator.generateToken();
+                        await UtilisateurCrud.createUtilisateur('', '', -1, '', mdp, pseudo, token);
+                        context.go('/home?token=$token');
                     }
                   }
                 },

@@ -1,7 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UtilisateurCrud {
-  static Future<void> createUtilisateur(String nom, String prenom, int age, String adresseMail, String mdp, String pseudo) async {
+  static Future<List<Map<String, dynamic>>?> createUtilisateur(String nom, String prenom, int age, String adresseMail, String mdp, String pseudo, int token) async {
+
     return await Supabase.instance.client
         .from('UTILISATEUR')
         .insert({
@@ -11,6 +12,7 @@ class UtilisateurCrud {
           'adressemail': adresseMail,
           'mdpu': mdp,
           'pseudou': pseudo,
+          'token' : token
         });
   }
 
@@ -27,7 +29,7 @@ class UtilisateurCrud {
     return response;
   }
 
-  static Future<void> updateUtilisateur(int idUtilisateur, String nom, String prenom, int age, String adresseMail, String mdp, String pseudo) async {
+  static Future<void> updateUtilisateur(int? idUtilisateur, String nom, String prenom, int age, String adresseMail, String mdp, String pseudo) async {
     return await Supabase.instance.client
         .from('UTILISATEUR')
         .update({
@@ -38,7 +40,7 @@ class UtilisateurCrud {
           'mdpu': mdp,
           'pseudou': pseudo,
         })
-        .eq('identifiantUtilisateur', idUtilisateur);
+        .eq('identifiantUtilisateur', idUtilisateur!);
   }
 
   static Future<void> deleteUtilisateur(int idUtilisateur) async {
@@ -67,6 +69,21 @@ class UtilisateurCrud {
         .from('UTILISATEUR')
         .select()
         .eq('identifiantutilisateur', idUtilisateur)
+        .single();
+
+    if (response.isEmpty) {
+      print('Erreur lors de la récupération de l\'utilisateur !');
+      return null;
+    }
+
+    return response;
+  }
+
+  static Future<Map<String, dynamic>?> fetchUtilisateurByToken(int token) async {
+    final response = await Supabase.instance.client
+        .from('UTILISATEUR')
+        .select()
+        .eq('token', token)
         .single();
 
     if (response.isEmpty) {

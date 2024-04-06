@@ -29,7 +29,7 @@ class UtilisateurCrud {
     return response;
   }
 
-  static Future<void> updateUtilisateur(int? idUtilisateur, String nom, String prenom, int age, String adresseMail, String mdp, String pseudo) async {
+  static Future<List<Map<String, dynamic>>?> updateUtilisateur(int? idUtilisateur, String nom, String prenom, int age, String adresseMail, String mdp, String pseudo) async {
     return await Supabase.instance.client
         .from('UTILISATEUR')
         .update({
@@ -40,7 +40,7 @@ class UtilisateurCrud {
           'mdpu': mdp,
           'pseudou': pseudo,
         })
-        .eq('identifiantUtilisateur', idUtilisateur!);
+        .eq('identifiantutilisateur', idUtilisateur!);
   }
 
   static Future<void> deleteUtilisateur(int idUtilisateur) async {

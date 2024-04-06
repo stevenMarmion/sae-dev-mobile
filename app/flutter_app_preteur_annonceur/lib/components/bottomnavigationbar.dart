@@ -34,6 +34,7 @@ class _BottomNavigationBarWrapperState extends State<BottomNavigationBarWrapper>
         widget.onItemTapped(index);
       },
       selectedFontSize: 14,
+      fixedColor: Colors.black,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home, color: Colors.black,),

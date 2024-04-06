@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_app_preteur_annonceur/src/app.dart';
 import 'package:flutter_app_preteur_annonceur/src/login_register/login.dart';
 import 'package:flutter_app_preteur_annonceur/src/login_register/register.dart';
+import 'package:flutter_app_preteur_annonceur/src/ui/detailannounce.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/home.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/postannounce.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/profile.dart';
@@ -94,15 +92,15 @@ final router = GoRouter(
             int? token = int.tryParse(state.uri.queryParameters['token']!);
             return HomePage(token: token);
           },
-      //     routes: <RouteBase>[
-      //       GoRoute(
-      //           path: 'details/:id',
-      //           builder: (context, state) {
-      //             final id = state.pathParameters["id"];
-      //             return const DetailsView(id);
-      //           },
-      //       ),
-      //     ]
+          routes: <RouteBase>[
+            GoRoute(
+                path: 'announces/:id',
+                builder: (context, state) {
+                  final id = int.parse(state.pathParameters["id"]!);
+                  return AnnonceDetailsPage(annonceId: id);
+                },
+            ),
+          ]
       ),
       // GoRoute(
       //   path: '/details/:id',

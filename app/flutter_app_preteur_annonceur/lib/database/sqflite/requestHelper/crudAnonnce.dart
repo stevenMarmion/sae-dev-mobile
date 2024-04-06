@@ -64,11 +64,18 @@ class AnnonceLocaleDatabaseHelper {
     }, where: 'cle_fonctionnelle = ?', whereArgs: [cleFonctionnelle]);
   }
 
-  static Future<void> setPourvu(int id) async {
+  static Future<void> setPourvu(int cleFonctionnelle) async {
     Database? db = await DatabaseHelper.getDatabase();
     await db?.rawUpdate('''
-      UPDATE Bien SET estReserve = ? WHERE ID_Bien = ?
-    ''', [1, id]);
+      UPDATE Bien SET estReserve = ? WHERE cle_fonctionnelle = ?
+    ''', [1, cleFonctionnelle]);
+  }
+
+  static Future<void> setOuvert(int cleFonctionnelle) async {
+    Database? db = await DatabaseHelper.getDatabase();
+    await db?.rawUpdate('''
+      UPDATE Bien SET estReserve = ? WHERE cle_fonctionnelle = ?
+    ''', [0, cleFonctionnelle]);
   }
 
   static Future<void> deleteAnnonce(int id) async {

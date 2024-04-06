@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_preteur_annonceur/components/bottomnavigationbar.dart';
 import 'package:flutter_app_preteur_annonceur/database/sqflite/requestHelper/crudAnonnce.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudAnonnce.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudCategorie.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudUtilisateur.dart';
 import 'package:flutter_app_preteur_annonceur/models/user.dart';
 import 'package:flutter_app_preteur_annonceur/utils/token.dart';
+import 'package:go_router/go_router.dart';
 
 class AnnonceCreationPage extends StatefulWidget {
   final int? token;
@@ -21,6 +23,8 @@ class _AnnonceCreationPageState extends State<AnnonceCreationPage> {
   late TextEditingController _idCategorieController;
   late TextEditingController _dateDebutController;
   late TextEditingController _dateClotureController;
+
+  int _selectedIndex = 2;
 
   Utilisateur? utilisateur;
 
@@ -197,7 +201,31 @@ class _AnnonceCreationPageState extends State<AnnonceCreationPage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBarWrapper(
+        initialIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
+      ),
     );
+  }
+
+  void _onItemTapped(int value) {
+    setState(() {
+      _selectedIndex = value;
+    });
+    switch (value) {
+      case 0:
+        context.go('/home?token=${widget.token}');
+        break;
+      case 1:
+        context.go('/search?token=${widget.token}');
+        break;
+      case 2:
+        context.go('/post-announce?token=${widget.token}');
+        break;
+      case 3:
+        context.go('/profile?token=${widget.token}');
+        break;
+    }
   }
 
   bool _checkFields() {

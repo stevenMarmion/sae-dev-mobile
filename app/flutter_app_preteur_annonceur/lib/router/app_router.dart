@@ -4,6 +4,7 @@ import 'package:flutter_app_preteur_annonceur/src/ui/detailannounce.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/home.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/mesbiens.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/mesprets.dart';
+import 'package:flutter_app_preteur_annonceur/src/ui/mesreservations.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/postannounce.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/profile.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/updateprofile.dart';
@@ -65,6 +66,13 @@ final router = GoRouter(
                 builder: (context, state) {
                   int? token = int.tryParse(state.uri.queryParameters['token']!);
                   return PretsPage(token: token);
+                },
+              ),
+              GoRoute(
+                path: 'mes-reservations',
+                builder: (context, state) {
+                  int? token = int.tryParse(state.uri.queryParameters['token']!);
+                  return ReservationsPage(token: token);
                 },
               )
             ]

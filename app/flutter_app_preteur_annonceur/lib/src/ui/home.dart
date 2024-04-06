@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_preteur_annonceur/components/bottomnavigationbar.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudAnonnce.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,13 +13,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectionIndex = 0;
+  int _selectedIndex = 0;
   late Future<List<Map<String, dynamic>>?> _futureAnnonces;
-
-  List<String> routes = [
-    '/home',
-    '/search',
-  ];
 
   @override
   void initState() {
@@ -35,11 +31,14 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Center(
-          child: Text("Bienvenue sur la page d'accueil"),
+          child: Text(
+            "Bienvenue sur la page d'accueil",
+            style: TextStyle(color: Colors.black),
+          ),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 20.0), // Ajout du padding à gauche et à droite
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         child: Center(
           child: FutureBuilder<List<Map<String, dynamic>>?>(
             future: _futureAnnonces,
@@ -61,12 +60,16 @@ class _HomePageState extends State<HomePage> {
                         child: Card(
                           margin: const EdgeInsets.symmetric(vertical: 8.0),
                           elevation: 4.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
                           child: ListTile(
-                            leading: const Icon(Icons.subject),
+                            leading: const Icon(Icons.subject, color: Colors.black),
                             title: Center(
                               child: Text(
                                 annonces[index]['titrea'] ?? '',
                                 textAlign: TextAlign.center,
+                                style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
                             subtitle: Text(
@@ -85,43 +88,23 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectionIndex,
-        onTap: _onItemTapped,
-        selectedFontSize: 14,
-        fixedColor: Colors.black,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.black),
-            label: "Accueil",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search, color: Colors.black),
-            label: "Rechercher",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle, color: Colors.black),
-            label: "Poster",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle, color: Colors.black),
-            label: "Profil",
-          ),
-        ],
+      bottomNavigationBar: BottomNavigationBarWrapper(
+        initialIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }
 
   void _onItemTapped(int value) {
     setState(() {
-      _selectionIndex = value;
+      _selectedIndex = value;
     });
     switch (value) {
       case 0:
-        context.go(routes[0]);
+        context.go('/home?token=${widget.token}');
         break;
       case 1:
-        context.go(routes[1]);
+        context.go('/search?token=${widget.token}');
         break;
       case 2:
         context.go('/post-announce?token=${widget.token}');
@@ -133,7 +116,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onAnnonceTapped(Map<String, dynamic> annonce) {
-    print('Annonce tapped: $annonce');
     context.go('/home/announces/${annonce['idannonce']}?token=${widget.token}');
   }
 }

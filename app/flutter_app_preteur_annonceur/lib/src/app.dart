@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_preteur_annonceur/database/sqflite/connexion_sqflite.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/connexion_supabase.dart';
 import 'package:flutter_app_preteur_annonceur/router/app_router.dart';
-import 'package:flutter_app_preteur_annonceur/src/login_register/login.dart';
-// ignore: depend_on_referenced_packages
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

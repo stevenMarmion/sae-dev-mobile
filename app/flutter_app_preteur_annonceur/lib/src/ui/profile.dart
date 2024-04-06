@@ -88,7 +88,21 @@ class ProfileContent extends StatelessWidget {
           onPressed: () {
             context.go('/profile/update-profile?token=$token');
           },
-          child: const Text('Vos coordonnées'),
+          child: const Text('Mes coordonnées'),
+        ),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () {
+            context.go('/profile/mes-biens?token=$token');
+          },
+          child: const Text('Mes biens actuels'),
+        ),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () {
+            context.go('/profile/mes-prets?token=$token');
+          },
+          child: const Text('Mes prêts actuels'),
         ),
       ],
     );

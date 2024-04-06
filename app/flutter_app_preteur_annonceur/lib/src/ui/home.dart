@@ -134,5 +134,6 @@ class _HomePageState extends State<HomePage> {
 
   void _onAnnonceTapped(Map<String, dynamic> annonce) {
     print('Annonce tapped: $annonce');
+    context.go('/home/announces/${annonce['idannonce']}?token=${widget.token}');
   }
 }

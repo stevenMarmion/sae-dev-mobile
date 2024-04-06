@@ -58,7 +58,7 @@ class AnnonceLocaleDatabaseHelper {
       'idEtat': idEtat,
       'dateCloture': dateCloture,
       'cle_fonctionnelle': cleFonctionnelle,
-    }, where: 'idAnnonce = ?', whereArgs: [id]);
+    }, where: 'cle_fonctionnelle = ?', whereArgs: [cleFonctionnelle]);
   }
 
   static Future<void> deleteAnnonce(int id) async {

@@ -65,4 +65,22 @@ class AnnonceCrud {
 
     return response;
   }
+
+  static Future<Map<String, dynamic>?> fetchAnnonceById(int id) async {
+    List<Map<String, dynamic>>? annonces = await Supabase.instance.client
+        .from('ANNONCE')
+        .select()
+        .eq('idannonce', id);
+
+    return annonces.isNotEmpty == true ? annonces[0] : null;
+  }
+
+  static Future<Map<String, dynamic>?> fetchAnnonceByfonctionnalKy(int cleFonctionnelle) async {
+    List<Map<String, dynamic>>? annonces = await Supabase.instance.client
+        .from('ANNONCE')
+        .select()
+        .eq('cle_fonctionnelle', cleFonctionnelle);
+
+    return annonces.isNotEmpty == true ? annonces[0] : null;
+  }
 }

@@ -117,6 +117,7 @@ class _AnnonceDetailsPageState extends State<AnnonceDetailsPage> {
                           value: bien,
                           groupValue: _bienSelectionne,
                           onChanged: (selectedBien) {
+                            print(selectedBien);
                             setState(() {
                               _bienSelectionne = selectedBien;
                             });

@@ -9,6 +9,7 @@ class DatabaseHelper {
   static Database? _database;
 
   static Future<Database?> getDatabase() async {
+    print('on getDatabase');
     if (_database != null) {
       return _database;
     }
@@ -18,7 +19,7 @@ class DatabaseHelper {
 
   static Future<Database> _initDatabase() async {
     var factory = databaseFactoryFfiWeb;
-    var db = await factory.openDatabase('database.db');
+    var db = await factory.openDatabase('lib/utils/database.db');
     await createSkeleton(db);
     return db;
   }

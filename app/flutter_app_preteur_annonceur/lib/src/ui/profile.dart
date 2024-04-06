@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_preteur_annonceur/components/bottomnavigationbar.dart';
 import 'package:flutter_app_preteur_annonceur/models/user.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudUtilisateur.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +14,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  int _selectedIndex = 3;
   Utilisateur? utilisateur;
 
   @override
@@ -56,8 +58,32 @@ class _ProfilePageState extends State<ProfilePage> {
             : const Center(
                 child: CircularProgressIndicator(),
               ),
+      bottomNavigationBar: BottomNavigationBarWrapper(
+        initialIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
+      ),
       ),
     );
+  }
+
+    void _onItemTapped(int value) {
+    setState(() {
+      _selectedIndex = value;
+    });
+    switch (value) {
+      case 0:
+        context.go('/home?token=${widget.token}');
+        break;
+      case 1:
+        context.go('/search?token=${widget.token}');
+        break;
+      case 2:
+        context.go('/post-announce?token=${widget.token}');
+        break;
+      case 3:
+        context.go('/profile?token=${widget.token}');
+        break;
+    }
   }
 }
 
@@ -103,6 +129,13 @@ class ProfileContent extends StatelessWidget {
             context.go('/profile/mes-prets?token=$token');
           },
           child: const Text('Mes prêts actuels'),
+        ),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () {
+            context.go('/profile/mes-reservations?token=$token');
+          },
+          child: const Text('Mes réservations actuelles'),
         ),
       ],
     );

@@ -18,29 +18,5 @@ class MyApp extends StatelessWidget {
       ),
       routerConfig: router,
     );
-    //return MultiProvider(
-        //providers: const [
-            // ChangeNotifierProvider(
-            //   create: (context) => LoginInfo()
-            // ),
-            // ProxyProvider<LoginInfo, AppRouter>(
-            //     update: (context, login, _) => AppRouter(loginInfo: login)
-            // ),
-        //],
-        //child:const Builder(
-              // builder: ((context) {
-              //   // ignore: unused_local_variable
-              //   final GoRouter router = Provider.of<AppRouter>(context).router;
-              //   return MaterialApp.router(
-              //     title: 'Application - Nombre mystère',
-              //     theme: ThemeData(
-              //         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigoAccent),
-              //     ),
-              //     routerConfig: AppRouter(loginInfo: Provider.of<LoginInfo>(context)).router,
-              //   );
-              // }
-            //),
-          //),
-    //);
   }
 }

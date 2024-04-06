@@ -50,6 +50,15 @@ class AnnonceCrud {
     return response;
   }
 
+  static Future<List<Map<String, dynamic>>?> fetchMesReservations(int? idU) async {
+    final response = await Supabase.instance.client
+        .from('ANNONCE')
+        .select()
+        .eq('idu', idU!)
+        .eq('idetat', 2);
+    return response;
+  }
+
   static Future<void> updateAnnonce(int idAnnonce, String titre, String description, String datedebut, int idUtilisateur, int idCategorie, int idEtat, String dateCloture, int cleFonctionnelle, int? pourvuPar) async {
     return await Supabase.instance.client
         .from('ANNONCE')

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_preteur_annonceur/database/sqflite/requestHelper/crudAnonnce.dart';
 import 'package:flutter_app_preteur_annonceur/database/sqflite/requestHelper/crudBien.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudAnonnce.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudCategorie.dart';
+import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudUtilisateur.dart';
+import 'package:flutter_app_preteur_annonceur/models/user.dart';
 
 class AnnonceDetailsPage extends StatefulWidget {
   final int annonceId;
+  final int? token;
 
-  const AnnonceDetailsPage({super.key, required this.annonceId});
+  const AnnonceDetailsPage({super.key, required this.annonceId, required this.token});
 
   @override
   _AnnonceDetailsPageState createState() => _AnnonceDetailsPageState();
@@ -15,30 +17,52 @@ class AnnonceDetailsPage extends StatefulWidget {
 
 class _AnnonceDetailsPageState extends State<AnnonceDetailsPage> {
   late Future<Map<String, dynamic>?> _futureAnnonce;
-  late Future<Map<String, dynamic>?> _futureCategorie;
+  late Map<String, dynamic>? _futureCategorie;
   late Map<String, dynamic>? annonce;
   late String categorieName = '';
-  Map<String, dynamic>? _bienSelectionne;
+  List<Map<String, dynamic>?> _biens = [];
+  Map<String, dynamic>? _selectedBien;
+
+  Utilisateur? utilisateur;
 
   @override
   void initState() {
     super.initState();
+    _fetchUser();
     _loadAnnonce();
-    _futureCategorie = _loadCategorie();
+    _loadCategorie();
   }
 
   void _loadAnnonce() async {
     _futureAnnonce = AnnonceCrud.fetchAnnonceById(widget.annonceId);
   }
 
-  Future<Map<String, dynamic>?> _loadCategorie() async {
+  Future<void> _loadCategorie() async {
     annonce = await AnnonceCrud.fetchAnnonceById(widget.annonceId);
+    print(annonce);
     int? categorieId = annonce?['idc'];
-    print(categorieId);
-    _bienSelectionne = await BienDatabaseHelper.getBienByCategorie(categorieId!);
-    print(_bienSelectionne);
-    return await CategorieCrud.getCategorieById(categorieId);
-    }
+    _futureCategorie = await CategorieCrud.getCategorieById(categorieId!);
+    categorieName = _futureCategorie?['nomc'];
+    _biens = await BienDatabaseHelper.getBienByCategorie(categorieId);
+    setState(() {});
+  }
+
+  Future<void> _fetchUser() async {
+    final user = await UtilisateurCrud.fetchUtilisateurByToken(widget.token!);
+    setState(() {
+      Utilisateur jsonUser = Utilisateur(
+        user?['identifiantutilisateur'],
+        user?['nomu'],
+        user?['prenomu'],
+        user?['ageu'],
+        user?['adressemail'],
+        user?['mdpu'],
+        user?['pseudou'],
+        int.parse(user?['token'])
+      ); 
+      utilisateur = jsonUser;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,22 +108,9 @@ class _AnnonceDetailsPageState extends State<AnnonceDetailsPage> {
                   ),
                   Text(annonce['datecloture']),
                   const SizedBox(height: 16.0),
-                  FutureBuilder<Map<String, dynamic>?>(
-                    future: _futureCategorie,
-                    builder: (context, categorieSnapshot) {
-                      if (categorieSnapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (categorieSnapshot.hasError) {
-                        return Text('Erreur: ${categorieSnapshot.error}');
-                      } else {
-                        Map<String, dynamic>? categorie = categorieSnapshot.data;
-                        categorieName = categorie?['nomc'] ?? 'Inconnu';
-                        return Text(
-                          "Catégorie: $categorieName",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        );
-                      }
-                    },
+                  Text(
+                    "Catégorie: $categorieName",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16.0),
                   const Text(
@@ -109,17 +120,16 @@ class _AnnonceDetailsPageState extends State<AnnonceDetailsPage> {
                   const SizedBox(height: 8.0),
                   Expanded(
                     child: ListView.builder(
-                      itemCount: _bienSelectionne != null ? 1 : 0,
+                      itemCount: _biens.length,
                       itemBuilder: (context, index) {
-                        final bien = _bienSelectionne!;
-                        return RadioListTile<Map<String, dynamic>>(
-                          title: Text(bien['nom']),
+                        final bien = _biens[index];
+                        return RadioListTile<Map<String, dynamic>?>(
+                          title: Text(bien?['Nom'] ?? ''),
                           value: bien,
-                          groupValue: _bienSelectionne,
+                          groupValue: _selectedBien,
                           onChanged: (selectedBien) {
-                            print(selectedBien);
                             setState(() {
-                              _bienSelectionne = selectedBien;
+                              _selectedBien = selectedBien;
                             });
                           },
                         );
@@ -127,31 +137,16 @@ class _AnnonceDetailsPageState extends State<AnnonceDetailsPage> {
                     ),
                   ),
                   const SizedBox(height: 16.0),
+                  Text(
+                    'Bien sélectionné: ${_selectedBien?['Nom'] ?? ""}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16.0),
                   ElevatedButton(
                     onPressed: () {
-                      if (_bienSelectionne != null) {
-                        AnnonceCrud.updateAnnonce(
-                          annonce['idannonce'],
-                          annonce['titrea'],
-                          annonce['description'],
-                          annonce['datedebut'],
-                          annonce['idu'],
-                          annonce['idc'],
-                          2,
-                          annonce['datecloture'],
-                          annonce['cle_fonctionnelle'],
-                        );
-                        AnnonceLocaleDatabaseHelper.updateAnnonce(
-                          annonce['idannonce'],
-                          annonce['titrea'],
-                          annonce['description'],
-                          annonce['datedebut'],
-                          annonce['idu'],
-                          annonce['idc'],
-                          2,
-                          annonce['datecloture'],
-                          annonce['cle_fonctionnelle'],
-                        );
+                      if (_selectedBien != null) {
+                        AnnonceCrud.pourvoirAnnonce(annonce['cle_fonctionnelle'], utilisateur!.getIdentifiantUtilisateur);
+                        BienDatabaseHelper.setBienReserve(_selectedBien?['ID_Bien']);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Veuillez sélectionner un bien à prêter')),

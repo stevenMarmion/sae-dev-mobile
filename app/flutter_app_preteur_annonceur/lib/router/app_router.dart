@@ -3,6 +3,7 @@ import 'package:flutter_app_preteur_annonceur/src/login_register/register.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/detailannounce.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/home.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/mesbiens.dart';
+import 'package:flutter_app_preteur_annonceur/src/ui/mesprets.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/postannounce.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/profile.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/updateprofile.dart';
@@ -58,6 +59,13 @@ final router = GoRouter(
                   int? token = int.tryParse(state.uri.queryParameters['token']!);
                   return AllBiensPage(token: token);
                 },
+              ),
+              GoRoute(
+                path: 'mes-prets',
+                builder: (context, state) {
+                  int? token = int.tryParse(state.uri.queryParameters['token']!);
+                  return PretsPage(token: token);
+                },
               )
             ]
       ),
@@ -105,7 +113,8 @@ final router = GoRouter(
                 path: 'announces/:id',
                 builder: (context, state) {
                   final id = int.parse(state.pathParameters["id"]!);
-                  return AnnonceDetailsPage(annonceId: id);
+                  int? token = int.tryParse(state.uri.queryParameters['token']!);
+                  return AnnonceDetailsPage(annonceId: id, token: token);
                 },
             ),
           ]

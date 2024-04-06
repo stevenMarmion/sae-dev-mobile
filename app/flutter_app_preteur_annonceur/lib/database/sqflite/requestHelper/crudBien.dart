@@ -51,12 +51,12 @@ class BienDatabaseHelper {
     return result.isNotEmpty ? result.first : null;
   }
 
-  static Future<Map<String, dynamic>?> getBienByCategorie(int idCategorie) async {
+  static Future<List<Map<String, dynamic>?>> getBienByCategorie(int idCategorie) async {
     Database? db = await DatabaseHelper.getDatabase();
     List<Map<String, dynamic>> result = await db?.rawQuery('''
       SELECT * FROM Bien WHERE ID_Categorie = ?
     ''', [idCategorie]) ?? [];
-    return result.isNotEmpty ? result.first : null;
+    return result;
   }
 
   static Future<Map<String, dynamic>?> getBienReserve() async {

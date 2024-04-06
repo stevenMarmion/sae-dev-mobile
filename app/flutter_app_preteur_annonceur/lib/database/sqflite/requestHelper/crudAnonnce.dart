@@ -15,6 +15,7 @@ class AnnonceLocaleDatabaseHelper {
         idEtat INTEGER NOT NULL,
         dateCloture TEXT NOT NULL,
         cle_fonctionnelle INTEGER NOT NULL,
+        pourvuPar INTEGER,
         FOREIGN KEY (IDU) REFERENCES UTILISATEUR(identifiantUtilisateur),
         FOREIGN KEY (IDC) REFERENCES CATEGORIE(idCategorie),
         FOREIGN KEY (idEtat) REFERENCES ETAT(IDE)
@@ -33,6 +34,7 @@ class AnnonceLocaleDatabaseHelper {
       'idEtat': idEtat,
       'dateCloture': dateCloture,
       'cle_fonctionnelle': cleFonctionnelle,
+      'pourvuPar' : null
     });
   }
 
@@ -47,7 +49,7 @@ class AnnonceLocaleDatabaseHelper {
     return result.isNotEmpty ? result.first : null;
   }
 
-  static Future<void> updateAnnonce(int id, String titre, String description, String datedebut, int idUtilisateur, int idCategorie, int idEtat, String dateCloture, int cleFonctionnelle) async {
+  static Future<void> updateAnnonce(int id, String titre, String description, String datedebut, int idUtilisateur, int idCategorie, int idEtat, String dateCloture, int cleFonctionnelle, int? pourvuPar) async {
     Database? db = await DatabaseHelper.getDatabase();
     await db?.update('ANNONCE', {
       'titreA': titre,
@@ -58,7 +60,15 @@ class AnnonceLocaleDatabaseHelper {
       'idEtat': idEtat,
       'dateCloture': dateCloture,
       'cle_fonctionnelle': cleFonctionnelle,
+      'pourvuPar' : pourvuPar
     }, where: 'cle_fonctionnelle = ?', whereArgs: [cleFonctionnelle]);
+  }
+
+  static Future<void> setPourvu(int id) async {
+    Database? db = await DatabaseHelper.getDatabase();
+    await db?.rawUpdate('''
+      UPDATE Bien SET estReserve = ? WHERE ID_Bien = ?
+    ''', [1, id]);
   }
 
   static Future<void> deleteAnnonce(int id) async {

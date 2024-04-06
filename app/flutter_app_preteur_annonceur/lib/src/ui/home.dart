@@ -2,21 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final int? token;
+
+  const HomePage({super.key, required this.token});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState(token);
 }
 
 class _HomePageState extends State<HomePage> {
   int _selectionIndex = 0;
+  final int? token;
 
   List<String> routes = [
     '/home',
     '/search',
     '/post-announce',
-    '/profil',
   ];
+  
+  _HomePageState(this.token);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +63,16 @@ class _HomePageState extends State<HomePage> {
   void _onItemTapped(int value) {
     setState(() {
       _selectionIndex = value;
-    });
-    context.go(routes[value]);
+    }); 
+    switch(value) {
+      case 0 :
+        context.go(routes[0]);
+      case 1 :
+        context.go(routes[1]);
+      case 2 :
+        context.go(routes[2]);
+      case 3 :
+        context.go('/profile?token=$token');
+    }
   }
 }

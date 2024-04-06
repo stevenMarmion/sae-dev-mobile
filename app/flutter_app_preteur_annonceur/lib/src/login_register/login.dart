@@ -4,14 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:postgrest/src/types.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  _LoginPageState({Key? key});
+  _LoginPageState();
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -69,22 +69,21 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   String pseudo = _usernameController.text;
                   String mdp = _passwordController.text;
-                  Future<PostgrestList?> rep = UtilisateurCrud.fetchUtilisateurByPseudoAndPassword(pseudo, mdp);
-                  rep.then((response) => {
-                    if (response!.isEmpty) {
+                  PostgrestList? rep = await UtilisateurCrud.fetchUtilisateurByPseudoAndPassword(pseudo, mdp);
+                  int token = int.parse(rep?[0]['token']);
+                    if (rep!.isEmpty) {
                       setState(() {
                         _unknowAccountMessage = "Vous n'avez pas de compte, veuillez vous en créer un !";
-                      })
+                      });
                     } else {
                       setState(() {
                         _unknowAccountMessage = null;
-                      }),
-                      context.go('/home')
+                      });
+                      context.go('/home?token=$token');
                     }
-                  });
                 },
                 child: const Text('Se connecter'),
               ),

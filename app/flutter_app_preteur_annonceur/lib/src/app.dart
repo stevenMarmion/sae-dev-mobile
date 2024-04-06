@@ -15,7 +15,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     DatabaseHelper.getDatabase();
     SupabaseConnexion.initaliseConnexion();
-    //final supabase = Supabase.instance.client;
 
     return MaterialApp.router(
       title: 'Application - SAE',

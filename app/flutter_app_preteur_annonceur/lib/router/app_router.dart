@@ -4,6 +4,8 @@ import 'package:flutter_app_preteur_annonceur/src/app.dart';
 import 'package:flutter_app_preteur_annonceur/src/login_register/login.dart';
 import 'package:flutter_app_preteur_annonceur/src/login_register/register.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/home.dart';
+import 'package:flutter_app_preteur_annonceur/src/ui/profile.dart';
+import 'package:flutter_app_preteur_annonceur/src/ui/updateprofile.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
@@ -27,7 +29,7 @@ final router = GoRouter(
       GoRoute(
           path: '/login',
           builder: (context, state) {
-            return LoginPage();
+            return const LoginPage();
           }
       ),
       GoRoute(
@@ -35,6 +37,22 @@ final router = GoRouter(
           builder: (context, state) {
             return RegisterPage();
           }
+      ),
+      GoRoute(
+          path: '/profile',
+          builder: (context, state) {
+            int? token = int.tryParse(state.uri.queryParameters['token']!);
+            return ProfilePage(token: token);
+          },
+          routes: <RouteBase>[
+            GoRoute(
+                path: 'update-profile',
+                builder: (context, state) {
+                  int? token = int.tryParse(state.uri.queryParameters['token']!);
+                  return ProfileEditPage(token: token);
+                },
+              )
+            ]
       ),
       // GoRoute(
       //     path: '/search',
@@ -65,7 +83,8 @@ final router = GoRouter(
       GoRoute(
           path: '/home',
           builder: (context, state) {
-            return const HomePage();
+            int? token = int.tryParse(state.uri.queryParameters['token']!);
+            return HomePage(token: token);
           },
       //     routes: <RouteBase>[
       //       GoRoute(

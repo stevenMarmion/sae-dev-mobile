@@ -4,6 +4,7 @@ import 'package:flutter_app_preteur_annonceur/src/app.dart';
 import 'package:flutter_app_preteur_annonceur/src/login_register/login.dart';
 import 'package:flutter_app_preteur_annonceur/src/login_register/register.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/home.dart';
+import 'package:flutter_app_preteur_annonceur/src/ui/postannounce.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/profile.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/updateprofile.dart';
 import 'package:go_router/go_router.dart';
@@ -53,6 +54,13 @@ final router = GoRouter(
                 },
               )
             ]
+      ),
+      GoRoute(
+          path: '/post-announce',
+          builder: (context, state) {
+            int? token = int.tryParse(state.uri.queryParameters['token']!);
+            return AnnonceCreationPage(token: token);
+          },
       ),
       // GoRoute(
       //     path: '/search',

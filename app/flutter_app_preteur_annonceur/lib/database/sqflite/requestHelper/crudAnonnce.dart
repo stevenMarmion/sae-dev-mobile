@@ -5,57 +5,64 @@ class AnnonceLocaleDatabaseHelper {
   
   static Future<void> initSkeleton(Database? db) async {
     await db?.execute('''
-      CREATE TABLE IF NOT EXISTS AnnonceLocale (
-        ID_Annonce INTEGER PRIMARY KEY,
-        Titre TEXT,
-        Description TEXT,
-        ID_Categorie INTEGER,
-        ID_Etat INTEGER,
-        Date_Creation DATE,
-        Date_Cloture DATE,
-        FOREIGN KEY (ID_Categorie) REFERENCES CATEGORIE(ID_Categorie),
-        FOREIGN KEY (ID_Etat) REFERENCES ETAT(ID_Etat)
+      CREATE TABLE IF NOT EXISTS ANNONCE (
+        idAnnonce INTEGER PRIMARY KEY,
+        titreA TEXT NOT NULL,
+        description TEXT NOT NULL,
+        datedebut TEXT NOT NULL,
+        IDU INTEGER NOT NULL,
+        IDC INTEGER NOT NULL,
+        idEtat INTEGER NOT NULL,
+        dateCloture TEXT NOT NULL,
+        cle_fonctionnelle INTEGER NOT NULL,
+        FOREIGN KEY (IDU) REFERENCES UTILISATEUR(identifiantUtilisateur),
+        FOREIGN KEY (IDC) REFERENCES CATEGORIE(idCategorie),
+        FOREIGN KEY (idEtat) REFERENCES ETAT(IDE)
       )
     ''');
   }
 
-  static Future<void> insertAnnonce(String titre, String description, int idCategorie, int idEtat, String dateCreation, String dateCloture) async {
+  static Future<void> insertAnnonce(String titre, String description, String datedebut, int? idUtilisateur, int idCategorie, int idEtat, String dateCloture, int cleFonctionnelle) async {
     Database? db = await DatabaseHelper.getDatabase();
-    await db?.insert('AnnonceLocale', {
-      'Titre': titre,
-      'Description': description,
-      'ID_Categorie': idCategorie,
-      'ID_Etat': idEtat,
-      'Date_Creation': dateCreation,
-      'Date_Cloture': dateCloture,
+    await db?.insert('ANNONCE', {
+      'titreA': titre,
+      'description': description,
+      'datedebut': datedebut,
+      'IDU': idUtilisateur,
+      'IDC': idCategorie,
+      'idEtat': idEtat,
+      'dateCloture': dateCloture,
+      'cle_fonctionnelle': cleFonctionnelle,
     });
   }
 
   static Future<List<Map<String, dynamic>>?> getAnnonces() async {
     Database? db = await DatabaseHelper.getDatabase();
-    return await db?.query('AnnonceLocale');
+    return await db?.query('ANNONCE');
   }
 
   static Future<Map<String, dynamic>?> getAnnonceById(int id) async {
     Database? db = await DatabaseHelper.getDatabase();
-    List<Map<String, dynamic>> result = await db?.query('AnnonceLocale', where: 'ID_Annonce = ?', whereArgs: [id]) ?? [];
+    List<Map<String, dynamic>> result = await db?.query('ANNONCE', where: 'idAnnonce = ?', whereArgs: [id]) ?? [];
     return result.isNotEmpty ? result.first : null;
   }
 
-  static Future<void> updateAnnonce(int id, String titre, String description, int idCategorie, int idEtat, String dateCreation, String dateCloture) async {
+  static Future<void> updateAnnonce(int id, String titre, String description, String datedebut, int idUtilisateur, int idCategorie, int idEtat, String dateCloture, int cleFonctionnelle) async {
     Database? db = await DatabaseHelper.getDatabase();
-    await db?.update('AnnonceLocale', {
-      'Titre': titre,
-      'Description': description,
-      'ID_Categorie': idCategorie,
-      'ID_Etat': idEtat,
-      'Date_Creation': dateCreation,
-      'Date_Cloture': dateCloture,
-    }, where: 'ID_Annonce = ?', whereArgs: [id]);
+    await db?.update('ANNONCE', {
+      'titreA': titre,
+      'description': description,
+      'datedebut': datedebut,
+      'IDU': idUtilisateur,
+      'IDC': idCategorie,
+      'idEtat': idEtat,
+      'dateCloture': dateCloture,
+      'cle_fonctionnelle': cleFonctionnelle,
+    }, where: 'idAnnonce = ?', whereArgs: [id]);
   }
 
   static Future<void> deleteAnnonce(int id) async {
     Database? db = await DatabaseHelper.getDatabase();
-    await db?.delete('AnnonceLocale', where: 'ID_Annonce = ?', whereArgs: [id]);
+    await db?.delete('ANNONCE', where: 'idAnnonce = ?', whereArgs: [id]);
   }
 }

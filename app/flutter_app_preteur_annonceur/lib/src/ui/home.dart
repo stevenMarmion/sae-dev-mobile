@@ -17,7 +17,6 @@ class _HomePageState extends State<HomePage> {
   List<String> routes = [
     '/home',
     '/search',
-    '/post-announce',
   ];
   
   _HomePageState(this.token);
@@ -70,7 +69,7 @@ class _HomePageState extends State<HomePage> {
       case 1 :
         context.go(routes[1]);
       case 2 :
-        context.go(routes[2]);
+        context.go('/post-announce?token=$token');
       case 3 :
         context.go('/profile?token=$token');
     }

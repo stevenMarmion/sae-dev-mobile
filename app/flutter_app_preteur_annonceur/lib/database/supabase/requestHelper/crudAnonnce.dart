@@ -1,6 +1,26 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AnnonceCrud {
+  static Future<void> pourvoirAnnonce(int cleFonctionnelle, int? idUtilisateur) async {
+    return await Supabase.instance.client
+        .from('ANNONCE')
+        .update({
+          'pourvuPar': idUtilisateur,
+          'idetat': 2,
+        })
+        .eq('cle_fonctionnelle', cleFonctionnelle);
+  }
+
+  static Future<void> ouvrirAnnonce(int cleFonctionnelle) async {
+    return await Supabase.instance.client
+        .from('ANNONCE')
+        .update({
+          'pourvuPar': null,
+          'idetat': 1,
+        })
+        .eq('cle_fonctionnelle', cleFonctionnelle);
+  }
+
   static Future<void> createAnnonce(String titre, String description, String datedebut, int? idUtilisateur, int idCategorie, int idEtat, String dateCloture, int cleFonctionnelle) async {
     return await Supabase.instance.client
         .from('ANNONCE')
@@ -13,6 +33,7 @@ class AnnonceCrud {
           'idetat': idEtat,
           'datecloture': dateCloture,
           'cle_fonctionnelle': cleFonctionnelle,
+          'pourvuPar' : null
         });
   }
 
@@ -29,7 +50,7 @@ class AnnonceCrud {
     return response;
   }
 
-  static Future<void> updateAnnonce(int idAnnonce, String titre, String description, String datedebut, int idUtilisateur, int idCategorie, int idEtat, String dateCloture, int cleFonctionnelle) async {
+  static Future<void> updateAnnonce(int idAnnonce, String titre, String description, String datedebut, int idUtilisateur, int idCategorie, int idEtat, String dateCloture, int cleFonctionnelle, int? pourvuPar) async {
     return await Supabase.instance.client
         .from('ANNONCE')
         .update({
@@ -41,6 +62,7 @@ class AnnonceCrud {
           'idetat': idEtat,
           'datecloture': dateCloture,
           'cle_fonctionnelle': cleFonctionnelle,
+          'pourvuPar' : pourvuPar
         })
         .eq('idannonce', idAnnonce);
   }
@@ -66,6 +88,31 @@ class AnnonceCrud {
     return response;
   }
 
+  static Future<List<Map<String, dynamic>>?> getAnnoncesByUser(int? idU) async {
+    final response = await Supabase.instance.client
+        .from('ANNONCE')
+        .select()
+        .eq('idu', idU!);
+
+    if (response.isEmpty) {
+      print('Erreur lors de la récupération des annonces par catégorie !');
+      return null;
+    }
+
+    return response;
+  }
+
+  
+  static Future<List<Map<String, dynamic>>?> getPretsByUser(int? idU) async {
+    print('on est la');
+    final response = await Supabase.instance.client
+        .from('ANNONCE')
+        .select()
+        .eq('pourvuPar', idU!);
+
+    return response;
+  }
+
   static Future<Map<String, dynamic>?> fetchAnnonceById(int id) async {
     List<Map<String, dynamic>>? annonces = await Supabase.instance.client
         .from('ANNONCE')
@@ -75,7 +122,7 @@ class AnnonceCrud {
     return annonces.isNotEmpty == true ? annonces[0] : null;
   }
 
-  static Future<Map<String, dynamic>?> fetchAnnonceByfonctionnalKy(int cleFonctionnelle) async {
+  static Future<Map<String, dynamic>?> fetchAnnonceByfonctionnalKey(int cleFonctionnelle) async {
     List<Map<String, dynamic>>? annonces = await Supabase.instance.client
         .from('ANNONCE')
         .select()

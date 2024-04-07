@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_preteur_annonceur/database/sqflite/requestHelper/crudBien.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudAnonnce.dart';
+import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudBien.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudCategorie.dart';
+import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudEstPourvu.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudUtilisateur.dart';
 import 'package:flutter_app_preteur_annonceur/models/user.dart';
 
@@ -143,10 +145,12 @@ class _AnnonceDetailsPageState extends State<AnnonceDetailsPage> {
                   ),
                   const SizedBox(height: 16.0),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_selectedBien != null) {
-                        AnnonceCrud.pourvoirAnnonce(annonce['cle_fonctionnelle'], utilisateur!.getIdentifiantUtilisateur);
-                        BienDatabaseHelper.setBienReserve(_selectedBien?['ID_Bien']);
+                        await BienCrud.createBien(_selectedBien?['Nom'], _selectedBien?['description']);
+                        await EstPourvuCrud.createEstPourvu(annonce['ida'], _selectedBien?['ID_Bien'], annonce['cle_fonctionnelle']);
+                        //await AnnonceCrud.pourvoirAnnonce(annonce['cle_fonctionnelle'], utilisateur!.getIdentifiantUtilisateur);
+                        //await BienDatabaseHelper.setBienReserve(_selectedBien?['ID_Bien']);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Veuillez sélectionner un bien à prêter')),

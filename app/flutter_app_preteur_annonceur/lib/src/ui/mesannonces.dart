@@ -87,6 +87,10 @@ class _AnnonceListPageState extends State<AnnonceListPage> {
                   value: 3,
                   child: Text("Annonces Clôturées"),
                 ),
+                DropdownMenuItem(
+                  value: 4,
+                  child: Text("Annonces En cours"),
+                ),
               ],
             ),
             const SizedBox(height: 10),
@@ -221,6 +225,10 @@ class _AnnonceListPageState extends State<AnnonceListPage> {
               DropdownMenuItem(
                 value: 3,
                 child: Text("Clôturée"),
+              ),
+              DropdownMenuItem(
+                value: 4,
+                child: Text("En cours"),
               ),
             ],
           ),

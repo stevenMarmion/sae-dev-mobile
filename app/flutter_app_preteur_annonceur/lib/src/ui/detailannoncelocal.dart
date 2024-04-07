@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudAnonnce.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudCategorie.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudUtilisateur.dart';
+import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudEstPourvu.dart';
 import 'package:flutter_app_preteur_annonceur/models/user.dart';
 
 class AnnonceDetailsWidget extends StatefulWidget {
   final int cleFonctionnelleAnnonce;
   final int? token;
 
-  const AnnonceDetailsWidget({super.key, required this.cleFonctionnelleAnnonce, required this.token});
+  const AnnonceDetailsWidget({Key? key, required this.cleFonctionnelleAnnonce, required this.token}) : super(key: key);
 
   @override
   _AnnonceDetailsWidgetState createState() => _AnnonceDetailsWidgetState();
@@ -16,6 +17,8 @@ class AnnonceDetailsWidget extends StatefulWidget {
 
 class _AnnonceDetailsWidgetState extends State<AnnonceDetailsWidget> {
   late Future<Map<String, dynamic>?> _futureAnnonce;
+  late Future<List<Map<String, dynamic>>?> _futureObjectsAssociated;
+
   Utilisateur? utilisateur;
 
   @override
@@ -23,13 +26,13 @@ class _AnnonceDetailsWidgetState extends State<AnnonceDetailsWidget> {
     super.initState();
     _fetchUser();
     _futureAnnonce = _loadAnnonce();
+    _futureObjectsAssociated = _getObjectsAssociatedWithAnnonce();
   }
 
   Future<Map<String, dynamic>?> _loadAnnonce() async {
     return await AnnonceCrud.fetchAnnonceByfonctionnalKey(widget.cleFonctionnelleAnnonce);
   }
 
-  
   Future<void> _fetchUser() async {
     final user = await UtilisateurCrud.fetchUtilisateurByToken(widget.token!);
     setState(() {
@@ -41,7 +44,7 @@ class _AnnonceDetailsWidgetState extends State<AnnonceDetailsWidget> {
         user?['adressemail'],
         user?['mdpu'],
         user?['pseudou'],
-        int.parse(user?['token'])
+        int.parse(user?['token'] ?? '0')
       ); 
       utilisateur = jsonUser;
     });
@@ -97,6 +100,35 @@ class _AnnonceDetailsWidgetState extends State<AnnonceDetailsWidget> {
                   const SizedBox(height: 8),
                   Text("Date de clôture : ${annonce?['datecloture'] ?? ''}"),
                   const SizedBox(height: 8),
+                  Text(
+                    "Objets associés à cette annonce :",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: FutureBuilder<List<Map<String, dynamic>>?>(
+                      future: _futureObjectsAssociated,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else {
+                          final objectsAssociated = snapshot.data;
+                          return ListView.builder(
+                            itemCount: objectsAssociated?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              final object = objectsAssociated![index];
+                              return ListTile(
+                                title: Text(object['nomb'] ?? ''),
+                                subtitle: Text(object['descriptionbien'] ?? ''),
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
+                  ),
                 ],
               ),
             );
@@ -113,5 +145,11 @@ class _AnnonceDetailsWidgetState extends State<AnnonceDetailsWidget> {
 
   String _getStateName(int? stateId) {
     return stateId == 1 ? 'Ouverte' : 'Pourvue';
+  }
+
+  Future<List<Map<String, dynamic>>?> _getObjectsAssociatedWithAnnonce() async {
+    final annonce = await _futureAnnonce;
+    final idAnnonce = annonce?['cle_fonctionnelle'];
+    return await EstPourvuCrud.getEstPourvuByAnnonce(idAnnonce);
   }
 }

@@ -10,14 +10,12 @@ class AnnonceLocaleDatabaseHelper {
         titreA TEXT NOT NULL,
         description TEXT NOT NULL,
         datedebut TEXT NOT NULL,
-        IDU INTEGER NOT NULL,
         IDC INTEGER NOT NULL,
         idEtat INTEGER NOT NULL,
         dateCloture TEXT NOT NULL,
         cle_fonctionnelle INTEGER NOT NULL,
         pourvuPar INTEGER,
         IDB INTEGER,
-        FOREIGN KEY (IDU) REFERENCES UTILISATEUR(identifiantUtilisateur),
         FOREIGN KEY (IDC) REFERENCES CATEGORIE(idCategorie),
         FOREIGN KEY (idEtat) REFERENCES ETAT(IDE)
         FOREIGN KEY (IDB) REFERENCES Bien(ID_Bien)

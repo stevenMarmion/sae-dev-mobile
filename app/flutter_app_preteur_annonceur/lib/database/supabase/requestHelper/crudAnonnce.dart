@@ -1,12 +1,20 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AnnonceCrud {
-  static Future<void> pourvoirAnnonce(int cleFonctionnelle, int? idUtilisateur) async {
+  static Future<void> pourvoirAnnonce(int cleFonctionnelle) async {
     return await Supabase.instance.client
         .from('ANNONCE')
         .update({
-          'pourvuPar': idUtilisateur,
           'idetat': 2,
+        })
+        .eq('cle_fonctionnelle', cleFonctionnelle);
+  }
+
+  static Future<void> setAnnonceEnCours(int cleFonctionnelle) async {
+    return await Supabase.instance.client
+        .from('ANNONCE')
+        .update({
+          'idetat': 4,
         })
         .eq('cle_fonctionnelle', cleFonctionnelle);
   }
@@ -66,7 +74,7 @@ class AnnonceCrud {
         .from('ANNONCE')
         .select()
         .eq('idu', idU!)
-        .eq('idetat', 2);
+        .eq('idetat', 4);
     return response;
   }
 

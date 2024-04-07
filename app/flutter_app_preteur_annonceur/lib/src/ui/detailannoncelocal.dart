@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_preteur_annonceur/database/sqflite/requestHelper/crudBien.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudAnonnce.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudCategorie.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudUtilisateur.dart';
 import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudEstPourvu.dart';
+import 'package:flutter_app_preteur_annonceur/database/supabase/requestHelper/crudBien.dart';
 import 'package:flutter_app_preteur_annonceur/models/user.dart';
 
 class AnnonceDetailsWidget extends StatefulWidget {
   final int cleFonctionnelleAnnonce;
   final int? token;
 
-  const AnnonceDetailsWidget({Key? key, required this.cleFonctionnelleAnnonce, required this.token}) : super(key: key);
+  const AnnonceDetailsWidget({super.key, required this.cleFonctionnelleAnnonce, required this.token});
 
   @override
   _AnnonceDetailsWidgetState createState() => _AnnonceDetailsWidgetState();
@@ -18,6 +20,7 @@ class AnnonceDetailsWidget extends StatefulWidget {
 class _AnnonceDetailsWidgetState extends State<AnnonceDetailsWidget> {
   late Future<Map<String, dynamic>?> _futureAnnonce;
   late Future<List<Map<String, dynamic>>?> _futureObjectsAssociated;
+  int? _selectedBienIndex;
 
   Utilisateur? utilisateur;
 
@@ -100,9 +103,9 @@ class _AnnonceDetailsWidgetState extends State<AnnonceDetailsWidget> {
                   const SizedBox(height: 8),
                   Text("Date de clôture : ${annonce?['datecloture'] ?? ''}"),
                   const SizedBox(height: 8),
-                  Text(
+                  const Text(
                     "Objets associés à cette annonce :",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Expanded(
@@ -119,15 +122,47 @@ class _AnnonceDetailsWidgetState extends State<AnnonceDetailsWidget> {
                             itemCount: objectsAssociated?.length ?? 0,
                             itemBuilder: (context, index) {
                               final object = objectsAssociated![index];
-                              return ListTile(
-                                title: Text(object['nomb'] ?? ''),
-                                subtitle: Text(object['descriptionbien'] ?? ''),
+                              return FutureBuilder<List<Map<String, dynamic>>?>(
+                                future: _getBienInfo(object['cle_bien']),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else {
+                                    final bienInfos = snapshot.data!;
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: bienInfos.asMap().entries.map((entry) {
+                                        final bienInfo = entry.value;
+                                        return ListTile(
+                                          title: Text(bienInfo['nomb'] ?? ''),
+                                          subtitle: Text(bienInfo['descriptionbien'] ?? ''),
+                                          leading: Radio<int>(
+                                            value: object['cle_bien'],
+                                            groupValue: _selectedBienIndex,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _selectedBienIndex = value;
+                                              });
+                                            },
+                                          ),
+                                        );
+                                      }).toList(),
+                                    );
+                                  }
+                                },
                               );
                             },
                           );
                         }
                       },
                     ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _validateSelection,
+                    child: const Text('Valider'),
                   ),
                 ],
               ),
@@ -139,17 +174,51 @@ class _AnnonceDetailsWidgetState extends State<AnnonceDetailsWidget> {
   }
 
   Future<String> _getCategoryName(int? categoryId) async {
+    print(categoryId);
     Map<String, dynamic>? rep = await CategorieCrud.getCategorieById(categoryId);
     return 'Catégorie ${rep!['nomc']}';
   }
 
   String _getStateName(int? stateId) {
-    return stateId == 1 ? 'Ouverte' : 'Pourvue';
+    String res = '';
+    switch (stateId) {
+      case 1:
+        res = 'Ouverte';
+        break;
+      
+      case 2:
+        res = 'Pourvue';
+        break;
+      
+      case 3:
+        res = 'Clôturée';
+        break;
+      
+      case 4:
+        res = 'En cours';
+        break;
+    }
+    return res;
   }
 
   Future<List<Map<String, dynamic>>?> _getObjectsAssociatedWithAnnonce() async {
     final annonce = await _futureAnnonce;
     final idAnnonce = annonce?['cle_fonctionnelle'];
-    return await EstPourvuCrud.getEstPourvuByAnnonce(idAnnonce);
+    List<Map<String, dynamic>>? listBiens = await EstPourvuCrud.getEstPourvuByAnnonce(idAnnonce);
+    return listBiens;
+  }
+
+  Future<List<Map<String, dynamic>>?> _getBienInfo(int? cleBien) async {
+    return await BienCrud.getBienByCle(cleBien!);
+  }
+
+  void _validateSelection() async {
+    if (_selectedBienIndex != null) {
+      await BienDatabaseHelper.setBienReserve(_selectedBienIndex!);
+      await AnnonceCrud.setAnnonceEnCours(widget.cleFonctionnelleAnnonce);
+      print('Bien sélectionné : $_selectedBienIndex');
+    } else {
+      print('Aucun bien sélectionné.');
+    }
   }
 }

@@ -1,12 +1,15 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class BienCrud {
-  static Future<void> createBien(String nom, String description) async {
+  static Future<void> createBien(String nom, String description, int cle_bien) async {
+    print(nom);
+    print(description);
     return await Supabase.instance.client
         .from('BIEN')
         .insert({
-          'nomb': nom,
+          'nombien': nom,
           'descriptionbien': description,
+          'cle_bien': cle_bien
         });
   }
 
@@ -27,7 +30,7 @@ class BienCrud {
     return await Supabase.instance.client
         .from('BIEN')
         .update({
-          'nomb': nom,
+          'nombien': nom,
           'descriptionbien': description,
         })
         .eq('IDBIEN', idBien);
@@ -37,14 +40,14 @@ class BienCrud {
     return await Supabase.instance.client
         .from('BIEN')
         .delete()
-        .eq('IDBIEN', idBien);
+        .eq('idbien', idBien);
   }
 
   static Future<Map<String, dynamic>?> getBienById(int idBien) async {
     final response = await Supabase.instance.client
         .from('BIEN')
         .select()
-        .eq('IDBIEN', idBien)
+        .eq('idbien', idBien)
         .single();
 
     if (response.isEmpty) {
@@ -60,6 +63,20 @@ class BienCrud {
         .from('BIEN')
         .select()
         .eq('nomb', nomBien);
+
+    if (response.isEmpty) {
+      print('Erreur lors de la récupération du bien par nom !');
+      return null;
+    }
+
+    return response;
+  }
+
+  static Future<List<Map<String, dynamic>>?> getBienByCle(int cle) async {
+    final response = await Supabase.instance.client
+        .from('BIEN')
+        .select()
+        .eq('cle_bien', cle);
 
     if (response.isEmpty) {
       print('Erreur lors de la récupération du bien par nom !');

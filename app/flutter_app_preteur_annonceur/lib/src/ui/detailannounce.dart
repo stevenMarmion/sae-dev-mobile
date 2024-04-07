@@ -147,10 +147,9 @@ class _AnnonceDetailsPageState extends State<AnnonceDetailsPage> {
                   ElevatedButton(
                     onPressed: () async {
                       if (_selectedBien != null) {
-                        await BienCrud.createBien(_selectedBien?['Nom'], _selectedBien?['description']);
-                        await EstPourvuCrud.createEstPourvu(annonce['ida'], _selectedBien?['ID_Bien'], annonce['cle_fonctionnelle']);
-                        //await AnnonceCrud.pourvoirAnnonce(annonce['cle_fonctionnelle'], utilisateur!.getIdentifiantUtilisateur);
-                        //await BienDatabaseHelper.setBienReserve(_selectedBien?['ID_Bien']);
+                        await BienCrud.createBien(_selectedBien?['Nom'], _selectedBien?['description'], _selectedBien?['cle_fonctionnelle']);
+                        await EstPourvuCrud.createEstPourvu(annonce['cle_fonctionnelle'], _selectedBien?['cle_fonctionnelle']);
+                        await AnnonceCrud.pourvoirAnnonce(annonce['cle_fonctionnelle']);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Veuillez sélectionner un bien à prêter')),

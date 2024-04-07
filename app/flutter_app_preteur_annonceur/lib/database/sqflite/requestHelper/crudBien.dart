@@ -11,21 +11,22 @@ class BienDatabaseHelper {
         description TEXT,
         ID_Categorie INTEGER,
         estReserve INTEGER,
+        cle_fonctionnelle INTEGER,
         FOREIGN KEY (ID_Categorie) REFERENCES CATEGORIE(ID_Categorie)
       )
     ''');
     await db?.execute('''
-        INSERT OR IGNORE INTO Bien(ID_Bien, Nom, description, ID_Categorie, estReserve) VALUES
-        (1, 'iPhone 13 Pro', 'Smartphone haut de gamme avec caméra professionnelle', 1, 0),
-        (2, 'Réfrigérateur Samsung', 'Réfrigérateur avec technologie avancée de conservation des aliments', 2, 0),
-        (3, 'Perceuse Bosch', 'Perceuse électrique sans fil avec batterie rechargeable', 3, 0),
-        (4, 'Vélo de montagne', 'Vélo tout terrain pour les amateurs de sports extrêmes', 4, 0),
-        (5, 'Chemise Ralph Lauren', 'Chemise élégante et confortable pour hommes', 5, 0),
-        (6, 'Canapé d''angle en cuir', 'Canapé spacieux et confortable pour le salon', 6, 0),
-        (7, 'Guitare électrique Fender', 'Guitare électrique haut de gamme pour les musiciens expérimentés', 7, 0),
-        (8, 'Harry Potter et la Coupe de Feu', 'Roman de la célèbre saga Harry Potter', 8, 0),
-        (9, 'Poussette Bugaboo', 'Poussette légère et facile à manœuvrer pour bébés', 9, 0),
-        (10, 'Tapis de yoga', 'Tapis de yoga antidérapant pour la pratique du yoga à domicile', 10, 0)
+        INSERT OR IGNORE INTO Bien(ID_Bien, Nom, description, ID_Categorie, estReserve, cle_fonctionnelle) VALUES
+        (1, 'iPhone 13 Pro', 'Smartphone haut de gamme avec caméra professionnelle', 1, 0, 1), 
+        (2, 'Réfrigérateur Samsung', 'Réfrigérateur avec technologie avancée de conservation des aliments', 2, 0, 2),
+        (3, 'Perceuse Bosch', 'Perceuse électrique sans fil avec batterie rechargeable', 3, 0, 3),
+        (4, 'Vélo de montagne', 'Vélo tout terrain pour les amateurs de sports extrêmes', 4, 0, 4),
+        (5, 'Chemise Ralph Lauren', 'Chemise élégante et confortable pour hommes', 5, 0, 5),
+        (6, 'Canapé d''angle en cuir', 'Canapé spacieux et confortable pour le salon', 6, 0, 6),
+        (7, 'Guitare électrique Fender', 'Guitare électrique haut de gamme pour les musiciens expérimentés', 7, 0, 7),
+        (8, 'Harry Potter et la Coupe de Feu', 'Roman de la célèbre saga Harry Potter', 8, 0, 8),
+        (9, 'Poussette Bugaboo', 'Poussette légère et facile à manœuvrer pour bébés', 9, 0, 9),
+        (10, 'Tapis de yoga', 'Tapis de yoga antidérapant pour la pratique du yoga à domicile', 10, 0, 10)
     ''');
   }
 

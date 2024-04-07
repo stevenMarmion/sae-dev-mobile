@@ -1,13 +1,12 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EstPourvuCrud {
-  static Future<void> createEstPourvu(int idAnnonce, int idBien, int cleFonctionnelle) async {
+  static Future<void> createEstPourvu(int cleAnnonce, int cleBien) async {
     return await Supabase.instance.client
         .from('EST_POURVU')
         .insert({
-          'ida': idAnnonce,
-          'idb': idBien,
-          'cle': cleFonctionnelle
+          'cle_annonce': cleAnnonce,
+          'cle_bien': cleBien,
         });
   }
 
@@ -24,52 +23,50 @@ class EstPourvuCrud {
     return response;
   }
 
-  static Future<void> deleteEstPourvu(int idAnnonce, int idBien) async {
+  static Future<void> deleteEstPourvu(int idPourvu) async {
     return await Supabase.instance.client
         .from('EST_POURVU')
         .delete()
-        .eq('ida', idAnnonce)
-        .eq('idb', idBien);
+        .eq('idpourvu', idPourvu);
   }
 
-  static Future<Map<String, dynamic>?> getEstPourvuById(int cle, int idBien) async {
+  static Future<Map<String, dynamic>?> getEstPourvuById(int idPourvu) async {
     final response = await Supabase.instance.client
         .from('EST_POURVU')
         .select()
-        .eq('cle', cle)
-        .eq('idb', idBien)
+        .eq('idpourvu', idPourvu)
         .single();
 
     if (response.isEmpty) {
-      print('Erreur lors de la récupération de l\'élément EST_POURVU par IDA et IDB !');
+      print('Erreur lors de la récupération de l\'élément EST_POURVU par IDPourvu !');
       return null;
     }
 
     return response;
   }
 
-  static Future<List<Map<String, dynamic>>?> getEstPourvuByAnnonce(int cle) async {
+  static Future<List<Map<String, dynamic>>?> getEstPourvuByAnnonce(int cleAnnonce) async {
     final response = await Supabase.instance.client
         .from('EST_POURVU')
         .select()
-        .eq('cle', cle);
+        .eq('cle_annonce', cleAnnonce);
 
     if (response.isEmpty) {
-      print('Erreur lors de la récupération des éléments EST_POURVU par IDA !');
+      print('Erreur lors de la récupération des éléments EST_POURVU par CleAnnonce !');
       return null;
     }
-
+    print(response);
     return response;
   }
 
-  static Future<List<Map<String, dynamic>>?> getEstPourvuByBien(int idBien) async {
+  static Future<List<Map<String, dynamic>>?> getEstPourvuByBien(int cleBien) async {
     final response = await Supabase.instance.client
         .from('EST_POURVU')
         .select()
-        .eq('idb', idBien);
+        .eq('cle_bien', cleBien);
 
     if (response.isEmpty) {
-      print('Erreur lors de la récupération des éléments EST_POURVU par IDB !');
+      print('Erreur lors de la récupération des éléments EST_POURVU par CleBien !');
       return null;
     }
 

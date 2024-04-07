@@ -21,6 +21,16 @@ class AnnonceCrud {
         .eq('cle_fonctionnelle', cleFonctionnelle);
   }
 
+  static Future<void> cloturerAnnnonce(int cleFonctionnelle) async {
+    return await Supabase.instance.client
+        .from('ANNONCE')
+        .update({
+          'pourvuPar': null,
+          'idetat': 3,
+        })
+        .eq('cle_fonctionnelle', cleFonctionnelle);
+  }
+
   static Future<void> createAnnonce(String titre, String description, String datedebut, int? idUtilisateur, int idCategorie, int idEtat, String dateCloture, int cleFonctionnelle) async {
     return await Supabase.instance.client
         .from('ANNONCE')
@@ -40,7 +50,8 @@ class AnnonceCrud {
   static Future<List<Map<String, dynamic>>?> fetchAnnonces() async {
     final response = await Supabase.instance.client
         .from('ANNONCE')
-        .select();
+        .select()
+        .eq('idetat', 1);
 
     if (response.isEmpty == true) {
       print('Erreur lors de la récupération des annonces !');
@@ -76,11 +87,24 @@ class AnnonceCrud {
         .eq('idannonce', idAnnonce);
   }
 
-  static Future<void> deleteAnnonce(int idAnnonce) async {
+  static Future<void> updateAnnonceBis(int idAnnonce, String titre, String description, String datedebut, String dateCloture, int idEtat) async {
+    return await Supabase.instance.client
+        .from('ANNONCE')
+        .update({
+          'titrea': titre,
+          'description': description,
+          'datedebut': datedebut,
+          'idetat': idEtat,
+          'datecloture': dateCloture,
+        })
+        .eq('idannonce', idAnnonce);
+  }
+
+  static Future<void> deleteAnnonce(int cleFonctionnelle) async {
     return await Supabase.instance.client
         .from('ANNONCE')
         .delete()
-        .eq('idannonce', idAnnonce);
+        .eq('cle_fonctionnelle', cleFonctionnelle);
   }
 
   static Future<List<Map<String, dynamic>>?> getAnnoncesByCategorie(int idCategorie) async {
@@ -88,6 +112,20 @@ class AnnonceCrud {
         .from('ANNONCE')
         .select()
         .eq('idc', idCategorie);
+
+    if (response.isEmpty) {
+      print('Erreur lors de la récupération des annonces par catégorie !');
+      return null;
+    }
+
+    return response;
+  }
+
+  static Future<List<Map<String, dynamic>>?> getAnnoncesByEtat(int etat) async {
+    final response = await Supabase.instance.client
+        .from('ANNONCE')
+        .select()
+        .eq('idetat', etat);
 
     if (response.isEmpty) {
       print('Erreur lors de la récupération des annonces par catégorie !');

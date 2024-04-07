@@ -16,9 +16,11 @@ class AnnonceLocaleDatabaseHelper {
         dateCloture TEXT NOT NULL,
         cle_fonctionnelle INTEGER NOT NULL,
         pourvuPar INTEGER,
+        IDB INTEGER,
         FOREIGN KEY (IDU) REFERENCES UTILISATEUR(identifiantUtilisateur),
         FOREIGN KEY (IDC) REFERENCES CATEGORIE(idCategorie),
         FOREIGN KEY (idEtat) REFERENCES ETAT(IDE)
+        FOREIGN KEY (IDB) REFERENCES Bien(ID_Bien)
       )
     ''');
   }
@@ -34,7 +36,8 @@ class AnnonceLocaleDatabaseHelper {
       'idEtat': idEtat,
       'dateCloture': dateCloture,
       'cle_fonctionnelle': cleFonctionnelle,
-      'pourvuPar' : null
+      'pourvuPar' : null,
+      'IDB' : null
     });
   }
 
@@ -49,7 +52,7 @@ class AnnonceLocaleDatabaseHelper {
     return result.isNotEmpty ? result.first : null;
   }
 
-  static Future<void> updateAnnonce(int id, String titre, String description, String datedebut, int idUtilisateur, int idCategorie, int idEtat, String dateCloture, int cleFonctionnelle, int? pourvuPar) async {
+  static Future<void> updateAnnonce(int id, String titre, String description, String datedebut, int idUtilisateur, int idCategorie, int idEtat, String dateCloture, int cleFonctionnelle, int? pourvuPar, int idb) async {
     Database? db = await DatabaseHelper.getDatabase();
     await db?.update('ANNONCE', {
       'titreA': titre,
@@ -60,7 +63,8 @@ class AnnonceLocaleDatabaseHelper {
       'idEtat': idEtat,
       'dateCloture': dateCloture,
       'cle_fonctionnelle': cleFonctionnelle,
-      'pourvuPar' : pourvuPar
+      'pourvuPar' : pourvuPar,
+      'IDB' : idb
     }, where: 'cle_fonctionnelle = ?', whereArgs: [cleFonctionnelle]);
   }
 
@@ -78,8 +82,16 @@ class AnnonceLocaleDatabaseHelper {
     ''', [0, cleFonctionnelle]);
   }
 
+  static Future<void> setCloturer(int cleFonctionnelle) async {
+    Database? db = await DatabaseHelper.getDatabase();
+    await db?.rawUpdate('''
+      UPDATE Bien SET estReserve = ? WHERE cle_fonctionnelle = ?
+    ''', [3, cleFonctionnelle]);
+  }
+
   static Future<void> deleteAnnonce(int id) async {
     Database? db = await DatabaseHelper.getDatabase();
     await db?.delete('ANNONCE', where: 'idAnnonce = ?', whereArgs: [id]);
   }
+  
 }

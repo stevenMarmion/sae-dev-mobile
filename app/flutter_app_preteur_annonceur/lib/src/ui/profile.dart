@@ -137,6 +137,13 @@ class ProfileContent extends StatelessWidget {
           },
           child: const Text('Mes réservations actuelles'),
         ),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () {
+            context.go('/profile/mes-annonces?token=$token');
+          },
+          child: const Text('Mes annonces actuelles'),
+        ),
       ],
     );
   }

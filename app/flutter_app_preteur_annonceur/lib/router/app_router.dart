@@ -1,7 +1,9 @@
 import 'package:flutter_app_preteur_annonceur/src/login_register/login.dart';
 import 'package:flutter_app_preteur_annonceur/src/login_register/register.dart';
+import 'package:flutter_app_preteur_annonceur/src/ui/detailannoncelocal.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/detailannounce.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/home.dart';
+import 'package:flutter_app_preteur_annonceur/src/ui/mesannonces.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/mesbiens.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/mesprets.dart';
 import 'package:flutter_app_preteur_annonceur/src/ui/mesreservations.dart';
@@ -74,6 +76,23 @@ final router = GoRouter(
                   int? token = int.tryParse(state.uri.queryParameters['token']!);
                   return ReservationsPage(token: token);
                 },
+              ),
+              GoRoute(
+                path: 'mes-annonces',
+                builder: (context, state) {
+                  int? token = int.tryParse(state.uri.queryParameters['token']!);
+                  return AnnonceListPage(token: token);
+                },
+                routes: <RouteBase>[
+                  GoRoute(
+                    path: 'details/:id',
+                    builder: (context, state) {
+                      final id = int.parse(state.pathParameters["id"]!);
+                      int? token = int.tryParse(state.uri.queryParameters['token']!);
+                      return AnnonceDetailsWidget(cleFonctionnelleAnnonce: id, token: token);
+                    },
+                  ),
+                ]
               )
             ]
       ),

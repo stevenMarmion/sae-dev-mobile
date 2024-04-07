@@ -40,11 +40,11 @@ class CategorieCrud {
         .eq('idcategorie', idCategorie);
   }
 
-  static Future<Map<String, dynamic>?> getCategorieById(int idCategorie) async {
+  static Future<Map<String, dynamic>?> getCategorieById(int? idCategorie) async {
   final response = await Supabase.instance.client
       .from('CATEGORIE')
       .select()
-      .eq('idcategorie', idCategorie)
+      .eq('idcategorie', idCategorie!)
       .single();
 
   if (response.isEmpty) {

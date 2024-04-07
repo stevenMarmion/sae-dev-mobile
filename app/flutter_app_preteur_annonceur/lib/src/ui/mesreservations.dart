@@ -7,7 +7,7 @@ import 'package:flutter_app_preteur_annonceur/models/user.dart';
 class ReservationsPage extends StatefulWidget {
   final int? token;
 
-  const ReservationsPage({Key? key, required this.token}) : super(key: key);
+  const ReservationsPage({super.key, required this.token});
 
   @override
   _ReservationsPageState createState() => _ReservationsPageState();
@@ -129,7 +129,7 @@ class _ReservationsPageState extends State<ReservationsPage> {
   }
 
   void _cloturerReservation(Map<String, dynamic> reservation) async {
-    await AnnonceCrud.ouvrirAnnonce(reservation['cle_fonctionnelle']);
-    await AnnonceLocaleDatabaseHelper.setOuvert(reservation['cle_fonctionnelle']);
+    await AnnonceCrud.cloturerAnnnonce(reservation['cle_fonctionnelle']);
+    await AnnonceLocaleDatabaseHelper.setCloturer(reservation['cle_fonctionnelle']);
   }
 }

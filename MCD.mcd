@@ -1,0 +1,41 @@
+UTILISATEURS:idUtilisateur,nom,prenom,age,adresseMail,mdp
+POSTER, 0N UTILISATEURS, 11 ANNONCE
+CATEGORIE:idCategorie,nomCategorie
+:
+:
+:
+
+REPONDRE, 0N UTILISATEURS, 11 ANNONCE
+ANNONCE:idAnnonce,titre,dureePret
+RELIER, 11 ANNONCE, 0N CATEGORIE
+:
+:
+:
+
+:
+:
+:
+:
+:
+:
+
+:
+:
+:
+ANNONCE_L:idAnnonce,titre,dureePret
+RECHERCHER_L, 11 ANNONCE_L, 0N CATEGORIE_L
+CATEGORIE_L:idCategorie,nomCategorie
+
+:
+:
+:
+:
+:
+APPARTENIR, 11 BIEN, 0N CATEGORIE_L
+
+:
+:
+:
+:
+:
+BIEN:idBien,nom,description,etat

@@ -1,0 +1,6 @@
+{
+  "appTitle": "flutter_app_preteur_annonceur",
+  "@appTitle": {
+    "description": "The title of the application"
+  }
+}
